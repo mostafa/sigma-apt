@@ -6,7 +6,7 @@ description: >
     load DLLs from unusual directories. MuddyWater maintains persistence
     by placing malicious DLLs alongside copies of legitimate programs in
     writable locations, exploiting the Windows DLL search order.
-author: Mostafa
+author: Mostafa Moradian
 date: 2026-03-09
 references:
     - https://attack.mitre.org/groups/G0069/

@@ -6,7 +6,7 @@ description: >
     unexpected locations. MuddyWater disguises malicious executables with
     filenames and registry key names associated with Windows Defender to
     blend in with legitimate security software.
-author: Mostafa
+author: Mostafa Moradian
 date: 2026-03-09
 references:
     - https://attack.mitre.org/groups/G0069/

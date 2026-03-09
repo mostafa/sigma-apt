@@ -6,7 +6,7 @@ description: >
     applications spawning command interpreters or scripting engines.
     MuddyWater has used DDE in weaponized documents to execute PowerShell
     scripts for initial payload delivery.
-author: Mostafa
+author: Mostafa Moradian
 date: 2026-03-09
 references:
     - https://attack.mitre.org/groups/G0069/

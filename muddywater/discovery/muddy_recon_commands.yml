@@ -7,7 +7,7 @@ description: >
     domain account discovery, systeminfo/hostname for system enumeration, and
     ipconfig for network configuration discovery, typically in the early
     post-compromise phase.
-author: Mostafa
+author: Mostafa Moradian
 date: 2026-03-09
 references:
     - https://attack.mitre.org/groups/G0069/
@@ -59,7 +59,7 @@ description: >
     Detects a burst of 3 or more reconnaissance commands from the same host
     within 5 minutes, indicating systematic host enumeration typical of
     MuddyWater post-compromise activity.
-author: Mostafa
+author: Mostafa Moradian
 date: 2026-03-09
 references:
     - https://attack.mitre.org/groups/G0069/

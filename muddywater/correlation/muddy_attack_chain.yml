@@ -5,7 +5,7 @@ description: >
     Base detection for MuddyWater initial execution via mshta.exe or DDE
     from Office applications. Used as an input to the attack chain
     correlation rule.
-author: Mostafa
+author: Mostafa Moradian
 date: 2026-03-09
 references:
     - https://attack.mitre.org/groups/G0069/
@@ -41,7 +41,7 @@ description: >
     Base detection for obfuscated PowerShell execution characteristic of
     MuddyWater POWERSTATS. Used as an input to the attack chain
     correlation rule.
-author: Mostafa
+author: Mostafa Moradian
 date: 2026-03-09
 references:
     - https://attack.mitre.org/groups/G0069/
@@ -71,7 +71,7 @@ status: experimental
 description: >
     Base detection for registry Run key persistence. Used as an input
     to the attack chain correlation rule.
-author: Mostafa
+author: Mostafa Moradian
 date: 2026-03-09
 references:
     - https://attack.mitre.org/groups/G0069/
@@ -101,7 +101,7 @@ status: experimental
 description: >
     Base detection for credential dumping activity. Used as an input
     to the attack chain correlation rule.
-author: Mostafa
+author: Mostafa Moradian
 date: 2026-03-09
 references:
     - https://attack.mitre.org/groups/G0069/
@@ -133,7 +133,7 @@ description: >
     registry persistence, and credential dumping -- all occurring on the
     same host within 1 hour. This pattern is highly indicative of an active
     MuddyWater intrusion progressing through the kill chain.
-author: Mostafa
+author: Mostafa Moradian
 date: 2026-03-09
 references:
     - https://attack.mitre.org/groups/G0069/

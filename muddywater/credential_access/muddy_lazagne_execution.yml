@@ -6,7 +6,7 @@ description: >
     MuddyWater uses to extract passwords from browsers, email clients,
     databases, WiFi profiles, and LSA secrets. LaZagne is a Python-based
     tool that may run as a compiled executable or via Python interpreter.
-author: Mostafa
+author: Mostafa Moradian
 date: 2026-03-09
 references:
     - https://attack.mitre.org/groups/G0069/

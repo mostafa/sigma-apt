@@ -6,7 +6,7 @@ description: >
     MuddyWater has used to establish persistence. Malicious macros embedded
     in the global template execute every time Microsoft Word starts,
     providing reliable execution without requiring a separate autostart entry.
-author: Mostafa
+author: Mostafa Moradian
 date: 2026-03-09
 references:
     - https://attack.mitre.org/groups/G0069/

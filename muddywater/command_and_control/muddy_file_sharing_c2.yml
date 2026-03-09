@@ -6,7 +6,7 @@ description: >
     used by MuddyWater for distributing remote access tools and payloads.
     The group has used OneHub, Sync.com, and TeraBox to host malicious
     installers and lure documents.
-author: Mostafa
+author: Mostafa Moradian
 date: 2026-03-09
 references:
     - https://attack.mitre.org/groups/G0069/

@@ -7,7 +7,7 @@ description: >
     has been observed checking for the presence of these security products
     to determine if the victim machine is running specific antivirus
     solutions and adjust its behavior accordingly.
-author: Mostafa
+author: Mostafa Moradian
 date: 2026-03-09
 references:
     - https://attack.mitre.org/groups/G0069/

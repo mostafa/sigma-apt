@@ -6,7 +6,7 @@ description: >
     files, a technique used by MuddyWater to stage stolen data for
     exfiltration. The group uses makecab instead of common archive tools
     to avoid detection by security products that monitor for zip/rar usage.
-author: Mostafa
+author: Mostafa Moradian
 date: 2026-03-09
 references:
     - https://attack.mitre.org/groups/G0069/

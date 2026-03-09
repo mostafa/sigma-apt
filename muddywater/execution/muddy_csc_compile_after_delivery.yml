@@ -6,7 +6,7 @@ description: >
     user-writable directories. MuddyWater downloads C# source code and uses
     csc.exe to compile executables on the victim machine, evading detection
     of pre-compiled malicious binaries.
-author: Mostafa
+author: Mostafa Moradian
 date: 2026-03-09
 references:
     - https://attack.mitre.org/groups/G0069/

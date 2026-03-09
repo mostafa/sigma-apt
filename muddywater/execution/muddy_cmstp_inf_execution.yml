@@ -6,7 +6,7 @@ description: >
     to bypass application whitelisting and execute the POWERSTATS payload.
     CMSTP.exe is a legitimate Microsoft Connection Manager tool that can be
     abused to load malicious INF files containing scriptlet references.
-author: Mostafa
+author: Mostafa Moradian
 date: 2026-03-09
 references:
     - https://attack.mitre.org/groups/G0069/

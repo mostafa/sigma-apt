@@ -6,7 +6,7 @@ description: >
     MuddyWater to execute the POWERSTATS payload. The group uses mshta.exe
     to run inline VBScript or HTA files that launch obfuscated PowerShell
     one-liners for C2 communication.
-author: Mostafa
+author: Mostafa Moradian
 date: 2026-03-09
 references:
     - https://attack.mitre.org/groups/G0069/

@@ -6,7 +6,7 @@ description: >
     key under HKCU\Software\Microsoft\Windows\CurrentVersion\Run. This
     specific key name is a known MuddyWater persistence indicator used
     across multiple campaigns since 2017.
-author: Mostafa
+author: Mostafa Moradian
 date: 2026-03-09
 references:
     - https://attack.mitre.org/groups/G0069/

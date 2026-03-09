@@ -6,7 +6,7 @@ description: >
     a pattern used by MuddyWater to execute malicious DLLs registered
     in Registry Run keys. The malware leverages rundll32.exe as a
     proxy to execute the payload DLL on system startup.
-author: Mostafa
+author: Mostafa Moradian
 date: 2026-03-09
 references:
     - https://attack.mitre.org/groups/G0069/
