@@ -1,0 +1,81 @@
+title: MuddyWater Reconnaissance Command Execution
+id: f6c3d81e-a9b4-4e57-c5f2-2b8a4e6d9f31
+status: experimental
+description: >
+    Detects execution of reconnaissance commands commonly used by MuddyWater
+    to enumerate the target environment. The group uses net user /domain for
+    domain account discovery, systeminfo/hostname for system enumeration, and
+    ipconfig for network configuration discovery, typically in the early
+    post-compromise phase.
+author: Mostafa
+date: 2026-03-09
+references:
+    - https://attack.mitre.org/groups/G0069/
+    - https://securelist.com/muddywater/88059/
+    - https://www.trendmicro.com/en_us/research/21/c/earth-vetala---muddywater-continues-to-target-organizations-in-t.html
+    - https://blog.talosintelligence.com/2022/01/iranian-apt-muddywater-targets-turkey.html
+tags:
+    - attack.discovery
+    - attack.t1087.002
+    - attack.t1082
+    - attack.t1016
+    - attack.t1033
+    - attack.g0069
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection_net_user_domain:
+        Image|endswith: '\net.exe'
+        CommandLine|contains|all:
+            - 'user'
+            - '/domain'
+    selection_net1_user_domain:
+        Image|endswith: '\net1.exe'
+        CommandLine|contains|all:
+            - 'user'
+            - '/domain'
+    selection_systeminfo:
+        Image|endswith: '\systeminfo.exe'
+    selection_ipconfig:
+        Image|endswith: '\ipconfig.exe'
+        CommandLine|contains: '/all'
+    selection_whoami:
+        Image|endswith: '\whoami.exe'
+    selection_hostname:
+        Image|endswith: '\hostname.exe'
+    selection_tasklist:
+        Image|endswith: '\tasklist.exe'
+    condition: 1 of selection_*
+falsepositives:
+    - System administrators running diagnostic commands
+    - Monitoring scripts using built-in Windows commands
+level: low
+---
+title: MuddyWater Reconnaissance Command Burst
+id: a7d4e92f-ba5c-4f68-d6a3-3c9b5f7e1a42
+status: experimental
+description: >
+    Detects a burst of 3 or more reconnaissance commands from the same host
+    within 5 minutes, indicating systematic host enumeration typical of
+    MuddyWater post-compromise activity.
+author: Mostafa
+date: 2026-03-09
+references:
+    - https://attack.mitre.org/groups/G0069/
+    - https://securelist.com/muddywater/88059/
+correlation:
+    type: event_count
+    rules:
+        - f6c3d81e-a9b4-4e57-c5f2-2b8a4e6d9f31
+    group-by:
+        - ComputerName
+    timespan: 5m
+    condition:
+        gte: 3
+level: high
+tags:
+    - attack.discovery
+    - attack.t1087.002
+    - attack.t1082
+    - attack.g0069

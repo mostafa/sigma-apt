@@ -1,0 +1,37 @@
+title: MuddyWater Normal.dotm Template Modification
+id: d8a5b937-e2c4-4f68-b3d1-7a6e9c2f5d18
+status: experimental
+description: >
+    Detects modification of the Normal.dotm Word template file, which
+    MuddyWater has used to establish persistence. Malicious macros embedded
+    in the global template execute every time Microsoft Word starts,
+    providing reliable execution without requiring a separate autostart entry.
+author: Mostafa
+date: 2026-03-09
+references:
+    - https://attack.mitre.org/groups/G0069/
+    - https://attack.mitre.org/techniques/T1137/001/
+    - https://reaqta.com/2017/11/muddywater-apt-targeting-middle-east/
+tags:
+    - attack.persistence
+    - attack.t1137.001
+    - attack.g0069
+logsource:
+    category: file_change
+    product: windows
+detection:
+    selection:
+        TargetFilename|endswith: '\Normal.dotm'
+    filter_office_update:
+        Image|endswith:
+            - '\winword.exe'
+            - '\setup.exe'
+        Image|contains:
+            - '\Microsoft Office\'
+            - '\Office16\'
+            - '\Office15\'
+    condition: selection and not filter_office_update
+falsepositives:
+    - Users customizing their Word default template
+    - Office updates or repairs modifying template files
+level: high

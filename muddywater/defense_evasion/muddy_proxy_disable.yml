@@ -1,0 +1,43 @@
+title: MuddyWater System Proxy Settings Disabled
+id: c3f9a57b-d6ea-4b48-9a2c-8e7f1d5b3c96
+status: experimental
+description: >
+    Detects registry modifications to disable system proxy settings.
+    MuddyWater has been observed disabling local proxy configurations to
+    ensure direct C2 communication bypasses any local inspection or
+    filtering proxies.
+author: Mostafa
+date: 2026-03-09
+references:
+    - https://attack.mitre.org/groups/G0069/
+    - https://attack.mitre.org/techniques/T1562/001/
+    - https://www.trendmicro.com/en_us/research/21/c/earth-vetala---muddywater-continues-to-target-organizations-in-t.html
+tags:
+    - attack.defense_evasion
+    - attack.t1562.001
+    - attack.g0069
+logsource:
+    category: registry_set
+    product: windows
+detection:
+    selection_proxy_enable:
+        TargetObject|endswith: '\Internet Settings\ProxyEnable'
+        Details: 'DWORD (0x00000000)'
+    selection_proxy_override:
+        TargetObject|endswith: '\Internet Settings\ProxyOverride'
+    selection_proxy_server_clear:
+        TargetObject|endswith: '\Internet Settings\ProxyServer'
+        Details: ''
+    selection_cmd_proxy:
+        Image|endswith:
+            - '\powershell.exe'
+            - '\cmd.exe'
+            - '\reg.exe'
+        CommandLine|contains|all:
+            - 'Internet Settings'
+            - 'ProxyEnable'
+    condition: 1 of selection_*
+falsepositives:
+    - Network administrators changing proxy configuration via scripts
+    - VPN software toggling proxy settings
+level: medium

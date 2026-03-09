@@ -1,0 +1,41 @@
+title: MuddyWater Mshta Spawning PowerShell or Cmd
+id: 5b9d2e17-f3a8-4c62-b1d5-8e4f7c6a3920
+status: experimental
+description: >
+    Detects mshta.exe spawning PowerShell or cmd.exe, a technique used by
+    MuddyWater to execute the POWERSTATS payload. The group uses mshta.exe
+    to run inline VBScript or HTA files that launch obfuscated PowerShell
+    one-liners for C2 communication.
+author: Mostafa
+date: 2026-03-09
+references:
+    - https://attack.mitre.org/groups/G0069/
+    - https://attack.mitre.org/techniques/T1218/005/
+    - https://www.fireeye.com/blog/threat-research/2018/03/iranian-threat-group-updates-ttps-in-spear-phishing-campaign.html
+    - https://securelist.com/muddywater/88059/
+tags:
+    - attack.defense_evasion
+    - attack.t1218.005
+    - attack.execution
+    - attack.t1059.001
+    - attack.g0069
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection_child_spawn:
+        ParentImage|endswith: '\mshta.exe'
+        Image|endswith:
+            - '\powershell.exe'
+            - '\pwsh.exe'
+            - '\cmd.exe'
+    selection_mshta_inline:
+        Image|endswith: '\mshta.exe'
+        CommandLine|contains:
+            - 'vbscript:Execute'
+            - 'javascript:'
+            - 'about:blank'
+    condition: 1 of selection_*
+falsepositives:
+    - Legitimate HTA applications used internally
+level: high

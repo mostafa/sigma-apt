@@ -1,0 +1,31 @@
+title: MuddyWater SystemTextEncoding Registry Persistence
+id: c6f3a824-d5e9-4b17-8a2c-1e9f4d3b6c85
+status: experimental
+description: >
+    Detects creation or modification of the SystemTextEncoding registry Run
+    key under HKCU\Software\Microsoft\Windows\CurrentVersion\Run. This
+    specific key name is a known MuddyWater persistence indicator used
+    across multiple campaigns since 2017.
+author: Mostafa
+date: 2026-03-09
+references:
+    - https://attack.mitre.org/groups/G0069/
+    - https://attack.mitre.org/techniques/T1547/001/
+    - https://www.fireeye.com/blog/threat-research/2018/03/iranian-threat-group-updates-ttps-in-spear-phishing-campaign.html
+    - https://securelist.com/muddywater/88059/
+    - https://reaqta.com/2017/11/muddywater-apt-targeting-middle-east/
+    - https://blog.talosintelligence.com/2022/01/iranian-apt-muddywater-targets-turkey.html
+tags:
+    - attack.persistence
+    - attack.t1547.001
+    - attack.g0069
+logsource:
+    category: registry_set
+    product: windows
+detection:
+    selection:
+        TargetObject|endswith: '\CurrentVersion\Run\SystemTextEncoding'
+    condition: selection
+falsepositives:
+    - Unlikely -- this specific registry value name is strongly associated with MuddyWater
+level: critical

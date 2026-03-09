@@ -1,0 +1,39 @@
+title: MuddyWater Masquerading as Windows Defender
+id: e5b2c79d-f8ac-4d6a-b4e3-1a9f3d7c5e28
+status: experimental
+description: >
+    Detects executables or files using Windows Defender-related names from
+    unexpected locations. MuddyWater disguises malicious executables with
+    filenames and registry key names associated with Windows Defender to
+    blend in with legitimate security software.
+author: Mostafa
+date: 2026-03-09
+references:
+    - https://attack.mitre.org/groups/G0069/
+    - https://attack.mitre.org/techniques/T1036/005/
+    - https://www.fireeye.com/blog/threat-research/2018/03/iranian-threat-group-updates-ttps-in-spear-phishing-campaign.html
+    - https://blog.talosintelligence.com/2019/05/recent-muddywater-associated-blackwater.html
+tags:
+    - attack.defense_evasion
+    - attack.t1036.005
+    - attack.g0069
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection_defender_names:
+        Image|endswith:
+            - '\MsMpEng.exe'
+            - '\MpCmdRun.exe'
+            - '\WindowsDefender.exe'
+            - '\WinDefend.exe'
+    filter_legitimate_paths:
+        Image|contains:
+            - '\Windows Defender\'
+            - '\Windows Defender Advanced Threat Protection\'
+            - '\Microsoft\Windows Defender\'
+            - '\Program Files\Windows Defender\'
+    condition: selection_defender_names and not filter_legitimate_paths
+falsepositives:
+    - Relocated or portable Windows Defender installations (unlikely)
+level: high

@@ -1,0 +1,37 @@
+title: MuddyWater File-Sharing Service for Tool Distribution
+id: 3a1c7d48-e9fb-4a5a-c3b6-2f8e5d1a4b79
+status: experimental
+description: >
+    Detects network connections or DNS queries to file-sharing services
+    used by MuddyWater for distributing remote access tools and payloads.
+    The group has used OneHub, Sync.com, and TeraBox to host malicious
+    installers and lure documents.
+author: Mostafa
+date: 2026-03-09
+references:
+    - https://attack.mitre.org/groups/G0069/
+    - https://attack.mitre.org/techniques/T1583/006/
+    - https://attack.mitre.org/techniques/T1102/002/
+    - https://www.anomali.com/blog/probable-iranian-cyber-actors-static-kitten-conducting-cyberespionage-campaign-targeting-uae-and-kuwait-government-agencies
+    - https://www.trendmicro.com/en_us/research/21/c/earth-vetala---muddywater-continues-to-target-organizations-in-t.html
+    - https://www.proofpoint.com/us/blog/threat-insight/security-brief-ta450-uses-embedded-links-pdf-attachments-latest-campaign
+tags:
+    - attack.command_and_control
+    - attack.t1102.002
+    - attack.resource_development
+    - attack.t1583.006
+    - attack.g0069
+logsource:
+    category: dns_query
+    product: windows
+detection:
+    selection_domains:
+        QueryName|endswith:
+            - '.onehub.com'
+            - '.sync.com'
+            - '.terabox.com'
+            - '.dubox.com'
+    condition: selection_domains
+falsepositives:
+    - Legitimate business use of OneHub, Sync.com, or TeraBox file-sharing services
+level: medium

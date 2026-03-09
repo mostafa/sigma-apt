@@ -1,0 +1,48 @@
+title: MuddyWater Obfuscated PowerShell Execution
+id: 3a7c8f12-e4b5-4d91-a6c3-9f2e1b8d7a54
+status: experimental
+description: >
+    Detects heavily obfuscated PowerShell execution patterns associated with
+    MuddyWater's POWERSTATS payload. The group uses Invoke-Obfuscation and
+    multi-layer Base64 encoding with string concatenation, character replacement,
+    and -EncodedCommand to evade static detection.
+author: Mostafa
+date: 2026-03-09
+references:
+    - https://attack.mitre.org/groups/G0069/
+    - https://www.cisa.gov/uscert/ncas/alerts/aa22-055a
+    - https://www.fireeye.com/blog/threat-research/2018/03/iranian-threat-group-updates-ttps-in-spear-phishing-campaign.html
+    - https://researchcenter.paloaltonetworks.com/2017/11/unit42-muddying-the-water-targeted-attacks-in-the-middle-east/
+tags:
+    - attack.execution
+    - attack.t1059.001
+    - attack.defense_evasion
+    - attack.t1027.010
+    - attack.g0069
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection_process:
+        Image|endswith: '\powershell.exe'
+    selection_obfuscation_indicators:
+        CommandLine|contains:
+            - 'Invoke-Obfuscation'
+            - 'COMSPEC'
+            - 'iex([System.Text.Encoding]'
+            - '[Convert]::FromBase64String'
+            - '-replace'
+            - 'char[]'
+            - '[System.Runtime.InteropServices.Marshal]'
+            - 'SecureStringToBSTR'
+    selection_encoded_long:
+        CommandLine|re: '-[Ee][Nn][Cc][Oo]?[Dd]?[Ee]?[Dd]?[Cc]?[Oo]?[Mm]?[Mm]?[Aa]?[Nn]?[Dd]?\s+[A-Za-z0-9+/=]{200,}'
+    selection_concat_obfuscation:
+        CommandLine|contains|all:
+            - "'+'"
+            - 'iex'
+    condition: selection_process and (1 of selection_obfuscation_indicators or selection_encoded_long or selection_concat_obfuscation)
+falsepositives:
+    - Legitimate PowerShell automation using Base64-encoded commands
+    - Security tools that use encoded PowerShell for deployment
+level: high

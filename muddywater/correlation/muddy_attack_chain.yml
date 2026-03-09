@@ -1,0 +1,156 @@
+title: MuddyWater Execution via Mshta or DDE
+id: 8e5fa28c-cd4e-4a69-a7f1-6b3d9c1e5f24
+status: experimental
+description: >
+    Base detection for MuddyWater initial execution via mshta.exe or DDE
+    from Office applications. Used as an input to the attack chain
+    correlation rule.
+author: Mostafa
+date: 2026-03-09
+references:
+    - https://attack.mitre.org/groups/G0069/
+tags:
+    - attack.execution
+    - attack.t1218.005
+    - attack.t1559.002
+    - attack.g0069
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection_mshta:
+        ParentImage|endswith: '\mshta.exe'
+        Image|endswith:
+            - '\powershell.exe'
+            - '\cmd.exe'
+    selection_dde:
+        ParentImage|endswith:
+            - '\winword.exe'
+            - '\excel.exe'
+        Image|endswith:
+            - '\cmd.exe'
+            - '\powershell.exe'
+            - '\mshta.exe'
+    condition: 1 of selection_*
+level: medium
+---
+title: MuddyWater PowerShell Payload Execution
+id: 9f6ab39d-de5f-4b7a-b8a2-7c4e1d2f6a35
+status: experimental
+description: >
+    Base detection for obfuscated PowerShell execution characteristic of
+    MuddyWater POWERSTATS. Used as an input to the attack chain
+    correlation rule.
+author: Mostafa
+date: 2026-03-09
+references:
+    - https://attack.mitre.org/groups/G0069/
+tags:
+    - attack.execution
+    - attack.t1059.001
+    - attack.t1027.010
+    - attack.g0069
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection:
+        Image|endswith: '\powershell.exe'
+        CommandLine|contains:
+            - '-EncodedCommand'
+            - '-enc '
+            - 'FromBase64String'
+            - 'iex('
+            - 'Invoke-Expression'
+    condition: selection
+level: medium
+---
+title: MuddyWater Registry Persistence Indicator
+id: 1a7bc41e-ef6a-4c8b-c9b3-8d5f2e3a7b46
+status: experimental
+description: >
+    Base detection for registry Run key persistence. Used as an input
+    to the attack chain correlation rule.
+author: Mostafa
+date: 2026-03-09
+references:
+    - https://attack.mitre.org/groups/G0069/
+tags:
+    - attack.persistence
+    - attack.t1547.001
+    - attack.g0069
+logsource:
+    category: registry_set
+    product: windows
+detection:
+    selection:
+        TargetObject|contains: '\CurrentVersion\Run\'
+        Details|contains:
+            - 'powershell'
+            - 'mshta'
+            - 'rundll32'
+            - 'wscript'
+            - 'cscript'
+            - 'cmd.exe'
+    condition: selection
+level: medium
+---
+title: MuddyWater Credential Access Indicator
+id: 2b8cd52f-fa7b-4d9c-dac4-9e6a3f4b8c57
+status: experimental
+description: >
+    Base detection for credential dumping activity. Used as an input
+    to the attack chain correlation rule.
+author: Mostafa
+date: 2026-03-09
+references:
+    - https://attack.mitre.org/groups/G0069/
+tags:
+    - attack.credential_access
+    - attack.t1003.001
+    - attack.g0069
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection:
+        CommandLine|contains:
+            - 'sekurlsa'
+            - 'lsadump'
+            - 'procdump'
+            - 'lazagne'
+            - 'mimikatz'
+            - 'browser64'
+    condition: selection
+level: high
+---
+title: MuddyWater Multi-Phase Attack Chain
+id: 3c9de63a-ab8c-4eac-ebb5-1f7b4a5c9d68
+status: experimental
+description: >
+    Temporal correlation detecting the full MuddyWater attack chain:
+    initial execution (mshta/DDE) followed by PowerShell payload delivery,
+    registry persistence, and credential dumping -- all occurring on the
+    same host within 1 hour. This pattern is highly indicative of an active
+    MuddyWater intrusion progressing through the kill chain.
+author: Mostafa
+date: 2026-03-09
+references:
+    - https://attack.mitre.org/groups/G0069/
+    - https://www.cisa.gov/uscert/ncas/alerts/aa22-055a
+tags:
+    - attack.execution
+    - attack.persistence
+    - attack.credential_access
+    - attack.g0069
+correlation:
+    type: temporal_ordered
+    rules:
+        - 8e5fa28c-cd4e-4a69-a7f1-6b3d9c1e5f24
+        - 9f6ab39d-de5f-4b7a-b8a2-7c4e1d2f6a35
+        - 1a7bc41e-ef6a-4c8b-c9b3-8d5f2e3a7b46
+        - 2b8cd52f-fa7b-4d9c-dac4-9e6a3f4b8c57
+    group-by:
+        - ComputerName
+    timespan: 1h
+level: critical

@@ -1,0 +1,40 @@
+title: MuddyWater Security Software Discovery via ProgramData
+id: 18a5b246-c7d9-4e38-a1f4-9d6e3b8c2f57
+status: experimental
+description: >
+    Detects file or directory enumeration of ProgramData for known
+    security vendor keywords (Kasper, Panda, ESET). MuddyWater malware
+    has been observed checking for the presence of these security products
+    to determine if the victim machine is running specific antivirus
+    solutions and adjust its behavior accordingly.
+author: Mostafa
+date: 2026-03-09
+references:
+    - https://attack.mitre.org/groups/G0069/
+    - https://attack.mitre.org/techniques/T1518/001/
+    - https://securelist.com/muddywater/88059/
+tags:
+    - attack.discovery
+    - attack.t1518.001
+    - attack.t1083
+    - attack.g0069
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection_cmd:
+        Image|endswith:
+            - '\cmd.exe'
+            - '\powershell.exe'
+            - '\pwsh.exe'
+    selection_av_keywords:
+        CommandLine|contains:
+            - 'Kasper'
+            - 'Panda'
+            - 'ESET'
+    selection_programdata_context:
+        CommandLine|contains: 'ProgramData'
+    condition: selection_cmd and selection_av_keywords and selection_programdata_context
+falsepositives:
+    - IT inventory scripts checking installed antivirus software
+level: high

@@ -1,0 +1,42 @@
+title: MuddyWater DLL Side-Loading from Suspicious Path
+id: e9b6c148-f3d5-4a79-c2e8-8b7f1d4a6e39
+status: experimental
+description: >
+    Detects DLL side-loading patterns where legitimate signed executables
+    load DLLs from unusual directories. MuddyWater maintains persistence
+    by placing malicious DLLs alongside copies of legitimate programs in
+    writable locations, exploiting the Windows DLL search order.
+author: Mostafa
+date: 2026-03-09
+references:
+    - https://attack.mitre.org/groups/G0069/
+    - https://attack.mitre.org/techniques/T1574/001/
+    - https://www.cisa.gov/uscert/ncas/alerts/aa22-055a
+tags:
+    - attack.persistence
+    - attack.defense_evasion
+    - attack.t1574.001
+    - attack.g0069
+logsource:
+    category: image_load
+    product: windows
+detection:
+    selection_suspicious_path:
+        ImageLoaded|contains:
+            - '\Users\Public\'
+            - '\AppData\Local\Temp\'
+            - '\ProgramData\'
+            - '\Desktop\'
+            - '\Downloads\'
+    selection_dll_extension:
+        ImageLoaded|endswith: '.dll'
+    filter_known_software:
+        Image|contains:
+            - '\Program Files\'
+            - '\Program Files (x86)\'
+            - '\Windows\'
+    condition: selection_suspicious_path and selection_dll_extension and not filter_known_software
+falsepositives:
+    - Portable applications loading DLLs from non-standard locations
+    - Development environments with DLLs in user directories
+level: medium

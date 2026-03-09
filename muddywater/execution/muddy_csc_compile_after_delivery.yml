@@ -1,0 +1,41 @@
+title: MuddyWater Compile After Delivery via csc.exe
+id: b4e8f291-c6d3-4a57-9e1f-5d2a8b3c7f16
+status: experimental
+description: >
+    Detects the .NET C# compiler (csc.exe) compiling code from temporary or
+    user-writable directories. MuddyWater downloads C# source code and uses
+    csc.exe to compile executables on the victim machine, evading detection
+    of pre-compiled malicious binaries.
+author: Mostafa
+date: 2026-03-09
+references:
+    - https://attack.mitre.org/groups/G0069/
+    - https://attack.mitre.org/techniques/T1027/004/
+    - https://www.clearskysec.com/wp-content/uploads/2018/11/MuddyWater-Operations-in-Lebanon-and-Oman.pdf
+tags:
+    - attack.defense_evasion
+    - attack.t1027.004
+    - attack.execution
+    - attack.g0069
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection:
+        Image|endswith: '\csc.exe'
+        CommandLine|contains:
+            - '\AppData\Local\Temp\'
+            - '\Users\Public\'
+            - '\ProgramData\'
+            - '\Desktop\'
+            - '\Downloads\'
+    filter_visual_studio:
+        ParentImage|endswith:
+            - '\devenv.exe'
+            - '\msbuild.exe'
+            - '\dotnet.exe'
+    condition: selection and not filter_visual_studio
+falsepositives:
+    - Developers compiling C# code from user directories
+    - Legitimate .NET applications that use dynamic compilation
+level: medium

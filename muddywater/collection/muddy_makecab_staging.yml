@@ -1,0 +1,38 @@
+title: MuddyWater Data Compression via makecab
+id: 4b2d8e59-fa1c-4b6a-d4c7-3a9f6e2b5c81
+status: experimental
+description: >
+    Detects usage of the native Windows makecab.exe utility to compress
+    files, a technique used by MuddyWater to stage stolen data for
+    exfiltration. The group uses makecab instead of common archive tools
+    to avoid detection by security products that monitor for zip/rar usage.
+author: Mostafa
+date: 2026-03-09
+references:
+    - https://attack.mitre.org/groups/G0069/
+    - https://attack.mitre.org/techniques/T1560/001/
+    - https://www.symantec.com/blogs/threat-intelligence/seedworm-espionage-group
+tags:
+    - attack.collection
+    - attack.t1560.001
+    - attack.g0069
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection:
+        Image|endswith: '\makecab.exe'
+    filter_windows_update:
+        ParentImage|endswith:
+            - '\TiWorker.exe'
+            - '\svchost.exe'
+            - '\dism.exe'
+    filter_system_paths:
+        CommandLine|contains:
+            - '\Windows\Logs\'
+            - '\Windows\servicing\'
+    condition: selection and not 1 of filter_*
+falsepositives:
+    - Windows Update and servicing operations (filtered)
+    - Legitimate software packaging using makecab
+level: medium

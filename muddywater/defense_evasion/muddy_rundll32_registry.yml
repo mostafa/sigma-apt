@@ -1,0 +1,40 @@
+title: MuddyWater Rundll32 DLL Execution via Registry
+id: d4a1b68c-e7fb-4c59-a3d2-9f8e2c6b4d17
+status: experimental
+description: >
+    Detects rundll32.exe loading DLLs from user-writable directories,
+    a pattern used by MuddyWater to execute malicious DLLs registered
+    in Registry Run keys. The malware leverages rundll32.exe as a
+    proxy to execute the payload DLL on system startup.
+author: Mostafa
+date: 2026-03-09
+references:
+    - https://attack.mitre.org/groups/G0069/
+    - https://attack.mitre.org/techniques/T1218/011/
+    - https://securelist.com/muddywater/88059/
+tags:
+    - attack.defense_evasion
+    - attack.t1218.011
+    - attack.persistence
+    - attack.t1547.001
+    - attack.g0069
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection:
+        Image|endswith: '\rundll32.exe'
+        CommandLine|contains:
+            - '\AppData\Local\Temp\'
+            - '\AppData\Roaming\'
+            - '\Users\Public\'
+            - '\ProgramData\'
+    filter_legitimate:
+        CommandLine|contains:
+            - '\Program Files\'
+            - '\Windows\System32\'
+            - '\Windows\SysWOW64\'
+    condition: selection and not filter_legitimate
+falsepositives:
+    - Legitimate software using rundll32 to load DLLs from AppData
+level: high

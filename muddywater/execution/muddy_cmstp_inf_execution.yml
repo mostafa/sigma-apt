@@ -1,0 +1,44 @@
+title: MuddyWater CMSTP INF File Execution
+id: 7e1c4a38-d9f6-4b25-a8e2-3c5d9f1b7e46
+status: experimental
+description: >
+    Detects CMSTP.exe abuse with INF files, a technique used by MuddyWater
+    to bypass application whitelisting and execute the POWERSTATS payload.
+    CMSTP.exe is a legitimate Microsoft Connection Manager tool that can be
+    abused to load malicious INF files containing scriptlet references.
+author: Mostafa
+date: 2026-03-09
+references:
+    - https://attack.mitre.org/groups/G0069/
+    - https://attack.mitre.org/techniques/T1218/003/
+    - https://www.fireeye.com/blog/threat-research/2018/03/iranian-threat-group-updates-ttps-in-spear-phishing-campaign.html
+tags:
+    - attack.defense_evasion
+    - attack.t1218.003
+    - attack.execution
+    - attack.g0069
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection_cmstp:
+        Image|endswith: '\cmstp.exe'
+        CommandLine|contains: '/s'
+    selection_cmstp_child:
+        ParentImage|endswith: '\cmstp.exe'
+        Image|endswith:
+            - '\powershell.exe'
+            - '\pwsh.exe'
+            - '\cmd.exe'
+            - '\mshta.exe'
+            - '\regsvr32.exe'
+    selection_inf_from_temp:
+        Image|endswith: '\cmstp.exe'
+        CommandLine|contains:
+            - '\AppData\Local\Temp\'
+            - '\Users\Public\'
+            - '\ProgramData\'
+    condition: 1 of selection_*
+falsepositives:
+    - Legitimate VPN or network profile installations using CMSTP
+level: high

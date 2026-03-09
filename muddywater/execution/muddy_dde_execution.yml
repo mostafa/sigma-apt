@@ -1,0 +1,45 @@
+title: MuddyWater DDE Execution from Office Application
+id: 9f2b5d64-a1c7-4e38-b9d6-2f8e3a7c1b59
+status: experimental
+description: >
+    Detects Dynamic Data Exchange (DDE) exploitation from Microsoft Office
+    applications spawning command interpreters or scripting engines.
+    MuddyWater has used DDE in weaponized documents to execute PowerShell
+    scripts for initial payload delivery.
+author: Mostafa
+date: 2026-03-09
+references:
+    - https://attack.mitre.org/groups/G0069/
+    - https://attack.mitre.org/techniques/T1559/002/
+    - https://securelist.com/muddywater/88059/
+tags:
+    - attack.execution
+    - attack.t1559.002
+    - attack.t1059.001
+    - attack.g0069
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection_parent:
+        ParentImage|endswith:
+            - '\winword.exe'
+            - '\excel.exe'
+            - '\powerpnt.exe'
+            - '\outlook.exe'
+    selection_child:
+        Image|endswith:
+            - '\cmd.exe'
+            - '\powershell.exe'
+            - '\pwsh.exe'
+            - '\wscript.exe'
+            - '\cscript.exe'
+            - '\mshta.exe'
+    filter_legitimate:
+        CommandLine|contains:
+            - '/Embedding'
+    condition: selection_parent and selection_child and not filter_legitimate
+falsepositives:
+    - Office add-ins that spawn legitimate command-line processes
+    - Macro-enabled documents used in business workflows
+level: high

@@ -1,0 +1,51 @@
+title: MuddyWater Remote Access Tool Installation or Execution
+id: 29b6c357-d8ea-4f49-b2a5-1e7f4c9d3a68
+status: experimental
+description: >
+    Detects installation or execution of legitimate remote access tools
+    favored by MuddyWater for persistent access and lateral movement:
+    ConnectWise (formerly ScreenConnect), AteraAgent, RemoteUtilities,
+    and SimpleHelp. While these are legitimate tools, their unauthorized
+    presence often indicates MuddyWater or similar threat actor activity.
+author: Mostafa
+date: 2026-03-09
+references:
+    - https://attack.mitre.org/groups/G0069/
+    - https://attack.mitre.org/techniques/T1219/
+    - https://www.trendmicro.com/en_us/research/21/c/earth-vetala---muddywater-continues-to-target-organizations-in-t.html
+    - https://www.anomali.com/blog/probable-iranian-cyber-actors-static-kitten-conducting-cyberespionage-campaign-targeting-uae-and-kuwait-government-agencies
+    - https://www.group-ib.com/blog/muddywater-infrastructure/
+tags:
+    - attack.command_and_control
+    - attack.t1219
+    - attack.g0069
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection_screenconnect:
+        Image|endswith:
+            - '\ScreenConnect.ClientService.exe'
+            - '\ScreenConnect.WindowsClient.exe'
+            - '\ConnectWiseControl.Client.exe'
+        CommandLine|contains:
+            - 'ScreenConnect'
+            - 'ConnectWise'
+    selection_atera:
+        Image|endswith:
+            - '\AteraAgent.exe'
+            - '\AgentPackageNetworkDiscovery.exe'
+    selection_remote_utilities:
+        Image|endswith:
+            - '\rutserv.exe'
+            - '\rfusclient.exe'
+    selection_simplehelp:
+        Image|endswith:
+            - '\SimpleHelp.exe'
+            - '\Remote Access.exe'
+        CommandLine|contains: 'SimpleHelp'
+    condition: 1 of selection_*
+falsepositives:
+    - Authorized use of remote support tools by IT helpdesk
+    - Managed service providers using these tools for client support
+level: medium
